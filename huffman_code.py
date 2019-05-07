@@ -1,24 +1,53 @@
-def character_frequency(phrase):
+import heapq
 
-    frequency = { }
+class Node:
+    def __init__(self, character, frequency):
+        self.character = character
+        self.frequency = frequency
+        self.right = None
+        self.left = None
 
-    for i in range(0, len(phrase)):
-        frequency[phrase[i]] = 0
-    for i in range(0, len(phrase)):
-        frequency[phrase[i]] += 1
+    def __lt__(self, other):
+        return self.frequency < other.frequency
 
-    return frequency
+
+class Huffman:
+    def __init__(self, text):
+        self.text = text
+        self.characters_frequency = {}
+        self.characters_codes = {}
+        self.heap = []
+
+        self.get_character_frequency()
+        self.fill_heap()
+
+    def get_character_frequency(self):
+
+        for character in self.text:
+            if not character in self.characters_frequency:
+                self.characters_frequency[character] = 0
+            self.characters_frequency[character] += 1
+
+    def fill_heap(self):
+
+        for key in self.characters_frequency:
+            heapq.heappush(self.heap, Node(key, self.characters_frequency[key]))
 
 
 def main():
 
-    phrase = str(input())
+    text = str(input())
     
-    print('[' + phrase + ']')
+    print('[' + text + ']')
 
-    frequency = character_frequency(phrase)
+    print('text in ASCII [' + str(len(text) * 8) + ' BITS]')
 
-    print(frequency)
+    huffman = Huffman(text)
+
+    print(huffman.characters_frequency)
+
+    for element in huffman.heap:
+        print(str(element.character) + ' : ' + str(element.frequency))
 
 
 if __name__ == '__main__':
