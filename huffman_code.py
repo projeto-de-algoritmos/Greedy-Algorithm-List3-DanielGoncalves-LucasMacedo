@@ -51,6 +51,31 @@ class Huffman:
 
             heapq.heappush(self.heap, join_node)
 
+    def print_huffman_tree(self, node):
+        if(node == None):
+            return
+
+        print(str(node.character) + ' : ' + str(node.frequency))
+
+        self.print_huffman_tree(node.left)
+        self.print_huffman_tree(node.right)
+
+    def get_characters_codes(self, node, code):
+        if(node == None):
+            return
+        if(node.character != None and self.characters_codes[node.character] == ''):
+            self.characters_codes[node.character] = code
+        self.get_characters_codes(node.left, code + '0')
+        self.get_characters_codes(node.right, code + '1')
+
+    def compress_text(self):
+        code = ''
+        self.get_character_frequency()
+        self.fill_heap()
+        self.join_nodes()
+        self.print_huffman_tree(self.heap[0])
+        self.get_characters_codes(self.heap[0], code)
+
 
 def main():
 
