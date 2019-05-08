@@ -43,8 +43,10 @@ class Huffman:
         while(len(self.heap) > 1):
             node_one = heapq.heappop(self.heap)
             node_two = heapq.heappop(self.heap)
-            print("ESTE EH O 1: " + str(node_one.character) + " " + str(node_one.frequency))
-            print("ESTE EH O 2: " + str(node_two.character) + " " + str(node_two.frequency))
+            
+            print("Primeiro node do join: " + str(node_one.character) + " " + str(node_one.frequency))
+            print("Segundo node do join: " + str(node_two.character) + " " + str(node_two.frequency))
+
             join_node = Node(None, node_one.frequency + node_two.frequency)
             join_node.left = node_one
             join_node.right = node_two
@@ -68,6 +70,10 @@ class Huffman:
         self.get_characters_codes(node.left, code + '0')
         self.get_characters_codes(node.right, code + '1')
 
+    def build_compressed_text(self):
+        for character in self.text:
+            self.compressed_text += self.characters_codes[character]
+
     def compress_text(self):
         code = ''
         self.get_character_frequency()
@@ -75,6 +81,7 @@ class Huffman:
         self.join_nodes()
         self.print_huffman_tree(self.heap[0])
         self.get_characters_codes(self.heap[0], code)
+        self.build_compressed_text()
 
 
 def main():
@@ -83,7 +90,7 @@ def main():
     
     print('[' + text + ']')
 
-    print('text in ASCII [' + str(len(text) * 8) + ' BITS]')
+    print('Text in ASCII [' + str(len(text) * 8) + ' BITS]')
 
     huffman = Huffman(text)
 
@@ -94,6 +101,9 @@ def main():
 
     print(huffman.characters_codes)
 
+    print(huffman.compressed_text)
+
+    print('Text compressed [' + str(len(huffman.compressed_text)) + ' BITS]')
 
 if __name__ == '__main__':
 
