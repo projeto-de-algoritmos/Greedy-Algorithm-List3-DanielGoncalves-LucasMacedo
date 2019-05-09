@@ -5,12 +5,14 @@ import urllib
 import json
 import time
 import os
+from huffman_code import Node, Huffman
 
 TOKEN = os.environ['SECRET_TOKEN']
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 HELP = """
- /help
+/help
+/encode <text>
 """
 
 def make_request(url):
@@ -88,12 +90,19 @@ def handle_updates(updates):
             send_message("Here is a list of things you can do.", chat)
             send_message(HELP, chat)
 
-        elif command == "kd":
-            send_message("No bolso do Van Dijk", chat)
-
-        elif command == "oq":
-            send_message("Pipoqueiro kkkkkkk", chat)
-            
+        elif command == "/encode":
+            try: 
+                huffman = Huffman(msg)
+                send_message("Text in ASCII\n\\[" + str(len(huffman.text) * 8) + " BITS]", chat)
+                send_message("Text encoded\n\\[" + huffman.encoded_text + "]", chat)
+                send_message("Text encoded\n\\[" + str(len(huffman.encoded_text)) + " BITS]", chat)
+                send_message("Text decoded\n\\[" + huffman.decoded_text + "]", chat)
+                send_message("Bits saved\n\\[" + str(len(huffman.text) * 8 - len(huffman.encoded_text)) + " BITS]", chat)
+                send_message("Characters frequency\n" + str(huffman.characters_frequency), chat)
+                send_message("Characters codes\n" + str(huffman.characters_codes), chat)
+            except:
+                send_message("The command was used wrongly", chat)
+        
         else:
             send_message("I'm sorry {}. I'm afraid I can't do that.".format(
                          user), chat)
@@ -114,4 +123,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+
+    try:
+        main()
+
+    except KeyboardInterrupt:
+        print('Interruption')

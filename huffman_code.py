@@ -70,15 +70,17 @@ class Huffman:
         self.print_huffman_tree(node.right)
 
     def get_characters_codes(self, node, code):
+        if len(self.characters_frequency) == 1:
+            self.characters_codes[node.character] = '0'
+        else:
+            if(node == None):
+                return
 
-        if(node == None):
-            return
+            if(node.character != None and self.characters_codes[node.character] == ''):
+                self.characters_codes[node.character] = code
 
-        if(node.character != None and self.characters_codes[node.character] == ''):
-            self.characters_codes[node.character] = code
-
-        self.get_characters_codes(node.left, code + '0')
-        self.get_characters_codes(node.right, code + '1')
+            self.get_characters_codes(node.left, code + '0')
+            self.get_characters_codes(node.right, code + '1')
 
     def build_encoded_text(self):
 
@@ -97,14 +99,18 @@ class Huffman:
     def decode_text(self):
 
         node = self.heap[0]
-        for bit in self.encoded_text:
-            if bit == '0':
-                node = node.left
-            else:
-                node = node.right
-            if node.left == None and node.right == None:
+        if len(self.characters_frequency) == 1:
+            for bit in self.encoded_text:
                 self.decoded_text += node.character
-                node = self.heap[0]
+        else:
+            for bit in self.encoded_text:
+                if bit == '0':
+                    node = node.left
+                else:
+                    node = node.right
+                if node.left == None and node.right == None:
+                    self.decoded_text += node.character
+                    node = self.heap[0]
 
 
 def main():
@@ -134,10 +140,10 @@ def main():
     print('Text decoded [' + huffman.decoded_text + ']')
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    try:
-        main()
+#     try:
+#         main()
 
-    except KeyboardInterrupt:
-        print('Interruption')
+#     except KeyboardInterrupt:
+#         print('Interruption')
