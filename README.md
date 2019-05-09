@@ -25,6 +25,11 @@ Bot shows the accepted commands
 > * ``` /encode <text> ```
 (enter text after the command /encode)
 The bot shows the coded, decoded text and number of bits saved with the compression
+ 
+### Bot Limitations
+
+The telegram only allows messages of up to 4096 characters in size, so it is possible to encode texts up to 4096 characters (command /encode + text).
+For the code it is possible to encode larger sized text, it is a limitation only for the bot.
 
 ## Huffman Code
 
