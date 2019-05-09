@@ -93,9 +93,15 @@ def handle_updates(updates):
         elif command == "/encode":
             try: 
                 huffman = Huffman(msg)
-                send_message("Text in ASCII\n\\[" + str(len(huffman.text) * 8) + " BITS]", chat)
-                send_message("Text encoded\n\\[" + huffman.encoded_text + "]", chat)
+                encoded_text_answer = "Text encoded\n\\[" + huffman.encoded_text + "]"
+                if(len(encoded_text_answer) > 4096):
+                    blocks4096 = [encoded_text_answer[i:i+4096] for i in range(0, len(encoded_text_answer), 4096)]
+                    for block4096 in blocks4096:
+                        send_message(block4096, chat)
+                else:
+                    send_message(encoded_text_answer, chat)
                 send_message("Text encoded\n\\[" + str(len(huffman.encoded_text)) + " BITS]", chat)
+                send_message("Text in ASCII\n\\[" + str(len(huffman.text) * 8) + " BITS]", chat)
                 send_message("Text decoded\n\\[" + huffman.decoded_text + "]", chat)
                 send_message("Bits saved\n\\[" + str(len(huffman.text) * 8 - len(huffman.encoded_text)) + " BITS]", chat)
                 send_message("Characters frequency\n" + str(huffman.characters_frequency), chat)
