@@ -114,10 +114,12 @@ def main():
     while True:
         print("Updates")
         updates = get_updates(last_update_id)
-
-        if len(updates["result"]) > 0:
-            last_update_id = get_last_update_id(updates) + 1
-            handle_updates(updates)
+        try:
+            if len(updates["result"]) > 0:
+                last_update_id = get_last_update_id(updates) + 1
+                handle_updates(updates)
+        except:
+            print("Update error")
 
         time.sleep(0.5)
 
