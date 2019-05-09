@@ -1,5 +1,6 @@
 import heapq
 
+
 class Node:
     def __init__(self, character, frequency):
         self.character = character
@@ -7,6 +8,7 @@ class Node:
         self.right = None
         self.left = None
     # para a heap não dar erro no heappush quando há frequencias iguais
+
     def __lt__(self, other):
         return self.frequency < other.frequency
 
@@ -17,13 +19,16 @@ class Huffman:
         self.characters_frequency = {}
         self.characters_codes = {}
         self.heap = []
-        self.compressed_text = ''
+
+        self.encoded_text = ''
+        self.decoded_text = ''
 
         for character in self.text:
             if not character in self.characters_codes:
                 self.characters_codes[character] = ''
 
-        self.compress_text()
+        self.encode_text()
+        self.decode_text()
 
     def get_character_frequency(self):
 
@@ -35,7 +40,8 @@ class Huffman:
     def fill_heap(self):
 
         for key in self.characters_frequency:
-            heapq.heappush(self.heap, Node(key, self.characters_frequency[key]))
+            heapq.heappush(self.heap, Node(
+                key, self.characters_frequency[key]))
 
     def join_nodes(self):
         # juntar os nos da heap ate que tenha so um no com os filhos
@@ -43,9 +49,9 @@ class Huffman:
         while(len(self.heap) > 1):
             node_one = heapq.heappop(self.heap)
             node_two = heapq.heappop(self.heap)
-            
-            print("Primeiro node do join: " + str(node_one.character) + " " + str(node_one.frequency))
-            print("Segundo node do join: " + str(node_two.character) + " " + str(node_two.frequency))
+
+            # print("Primeiro node do join: " + str(node_one.character) + " " + str(node_one.frequency))
+            # print("Segundo node do join: " + str(node_two.character) + " " + str(node_two.frequency))
 
             join_node = Node(None, node_one.frequency + node_two.frequency)
             join_node.left = node_one
@@ -54,6 +60,7 @@ class Huffman:
             heapq.heappush(self.heap, join_node)
 
     def print_huffman_tree(self, node):
+
         if(node == None):
             return
 
@@ -63,47 +70,73 @@ class Huffman:
         self.print_huffman_tree(node.right)
 
     def get_characters_codes(self, node, code):
+
         if(node == None):
             return
+
         if(node.character != None and self.characters_codes[node.character] == ''):
             self.characters_codes[node.character] = code
+
         self.get_characters_codes(node.left, code + '0')
         self.get_characters_codes(node.right, code + '1')
 
-    def build_compressed_text(self):
-        for character in self.text:
-            self.compressed_text += self.characters_codes[character]
+    def build_encoded_text(self):
 
-    def compress_text(self):
+        for character in self.text:
+            self.encoded_text += self.characters_codes[character]
+
+    def encode_text(self):
+
         code = ''
+
         self.get_character_frequency()
         self.fill_heap()
         self.join_nodes()
-        self.print_huffman_tree(self.heap[0])
+        # self.print_huffman_tree(self.heap[0])
         self.get_characters_codes(self.heap[0], code)
-        self.build_compressed_text()
+        self.build_encoded_text()
+
+    def decode_text(self):
+
+        self.decoded_text = ''
+
+        node = self.heap[0]
+        for bit in self.encoded_text:
+            if bit == '0':
+                node = node.left
+            else:
+                node = node.right
+            if node.left == None and node.right == None:
+                self.decoded_text += node.character
+                node = self.heap[0]
 
 
 def main():
 
     text = str(input())
-    
-    print('[' + text + ']')
-
-    print('Text in ASCII [' + str(len(text) * 8) + ' BITS]')
 
     huffman = Huffman(text)
 
+    print('[' + huffman.text + ']')
+
+    print('Text in ASCII [' + str(len(huffman.text) * 8) + ' BITS]')
+
     print(huffman.characters_frequency)
 
-    for element in huffman.heap:
-        print(str(element.character) + ' : ' + str(element.frequency))
+    # for element in huffman.heap:
+    #     print(str(element.character) + ' : ' + str(element.frequency))
 
     print(huffman.characters_codes)
 
-    print(huffman.compressed_text)
+    print('Text encoded [' + huffman.encoded_text + ']')
 
-    print('Text compressed [' + str(len(huffman.compressed_text)) + ' BITS]')
+    print('Text encoded [' + str(len(huffman.encoded_text)) + ' BITS]')
+
+    print('Bits saved [' + str(len(huffman.text) *
+                               8 - len(huffman.encoded_text)) + ' BITS]')
+
+    print('Text decoded [' + huffman.decoded_text + ']')
+
 
 if __name__ == '__main__':
 
