@@ -7,8 +7,8 @@ class Node:
         self.frequency = frequency
         self.right = None
         self.left = None
-    # para a heap não dar erro no heappush quando há frequencias iguais
 
+    # para a heap não dar erro no heappush quando há frequencias iguais
     def __lt__(self, other):
         return self.frequency < other.frequency
 
@@ -87,18 +87,14 @@ class Huffman:
 
     def encode_text(self):
 
-        code = ''
-
         self.get_character_frequency()
         self.fill_heap()
         self.join_nodes()
         # self.print_huffman_tree(self.heap[0])
-        self.get_characters_codes(self.heap[0], code)
+        self.get_characters_codes(self.heap[0], '')
         self.build_encoded_text()
 
     def decode_text(self):
-
-        self.decoded_text = ''
 
         node = self.heap[0]
         for bit in self.encoded_text:
